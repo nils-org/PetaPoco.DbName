@@ -58,8 +58,8 @@ Small note: If editing the Readme, please conform to the [standard-readme][] spe
 
 [MIT License © Nils Andresen, Jürgen Rosenthal-Buroh][license]
 
-[githubbuild]: https://github.com/nils-org/PetaPoco.DbName/actions/workflows/build.yaml?query=branch%3Adevelop
-[githubimage]: https://github.com/nils-org/PetaPoco.DbName/actions/workflows/build.yaml/badge.svg?branch=develop
+[githubbuild]: https://github.com/nils-org/PetaPoco.DbName/actions/workflows/build.yml?query=branch%3Adevelop
+[githubimage]: https://github.com/nils-org/PetaPoco.DbName/actions/workflows/build.yml/badge.svg?branch=develop
 [codecov]: https://codecov.io/gh/nils-org/PetaPoco.DbName
 [codecovimage]: https://img.shields.io/codecov/c/github/nils-org/PetaPoco.DbName.svg?logo=codecov&style=flat-square
 [contrib-covenant]: https://www.contributor-covenant.org/version/2/0/code_of_conduct/
