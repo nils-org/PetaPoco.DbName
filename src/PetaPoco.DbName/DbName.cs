@@ -11,13 +11,19 @@ public static class DbName
 
     public static string GetColumnName<TSource>(this IDatabase db, Expression<Func<TSource, object?>> property)
     {
-        var propName = GetName(property);
-        var pocoType = typeof(TSource);
-        var key = $"{db.Provider.GetType().Name}/{pocoType.FullName}.{propName}";
-        return Cache.GetOrAdd(key, FindColumnName(db, propName, pocoType));
+        return GetColumnName(db, property, true);
     }
 
-    private static string FindColumnName(IDatabase db, string propName, Type pocoType)
+    public static string GetColumnName<TSource>(this IDatabase db, Expression<Func<TSource, object?>> property, bool escape)
+    {
+        var propName = GetName(property);
+        var pocoType = typeof(TSource);
+        var postfix = escape ? "E" : "U";
+        var key = $"{db.Provider.GetType().Name}/{pocoType.FullName}.{propName}.{postfix}";
+        return Cache.GetOrAdd(key, FindColumnName(db, propName, pocoType, escape));
+    }
+
+    private static string FindColumnName(IDatabase db, string propName, Type pocoType, bool escape)
     {
         var dbName = propName;
 
@@ -39,19 +45,29 @@ public static class DbName
             }
         }
 
-        dbName = db.Provider.EscapeSqlIdentifier(dbName);
+        if(escape)
+        {
+            dbName = db.Provider.EscapeSqlIdentifier(dbName);
+        }
+
         return dbName;
     }
 
     public static string GetTableName<TSource>(this IDatabase db)
     {
-        var pocoType = typeof(TSource);
-        var pocoName = pocoType.Name;
-        var key = $"{db.Provider.GetType().Name}/{pocoType.FullName}.<TABLE>";
-        return Cache.GetOrAdd(key, FindTableName(db, pocoName, pocoType));
+        return GetTableName<TSource>(db, true);
     }
 
-    private static string FindTableName(IDatabase db, string pocoName, Type pocoType)
+    public static string GetTableName<TSource>(this IDatabase db, bool escape)
+    {
+        var pocoType = typeof(TSource);
+        var pocoName = pocoType.Name;
+        var postfix = escape ? "E" : "U";
+        var key = $"{db.Provider.GetType().Name}/{pocoType.FullName}.<TABLE>.{postfix}";
+        return Cache.GetOrAdd(key, FindTableName(db, pocoName, pocoType, escape));
+    }
+
+    private static string FindTableName(IDatabase db, string pocoName, Type pocoType, bool escape)
     {
         var dbName = pocoName;
 
@@ -65,7 +81,11 @@ public static class DbName
             }
         }
 
-        dbName = db.Provider.EscapeTableName(dbName);
+        if (escape)
+        {
+            dbName = db.Provider.EscapeTableName(dbName);
+        }
+
         return dbName;
     }
 
