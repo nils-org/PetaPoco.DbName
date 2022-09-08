@@ -21,9 +21,17 @@ public class TableNameTests : IDisposable
     }
 
     [Fact]
+    public void Should_Return_TableName_For_Unattributed_Class_Escaped_By_Default()
+    {
+        var actual = db.GetTableName<TestTable1>(escape: true);
+
+        actual.ShouldBe(db.Provider.EscapeTableName("TestTable1"));
+    }
+
+    [Fact]
     public void Should_Return_TableName_For_Unattributed_Class()
     {
-        var actual = db.GetTableName<TestTable1>();
+        var actual = db.GetTableName<TestTable1>(escape: true);
 
         actual.ShouldBe(db.Provider.EscapeTableName("TestTable1"));
     }
@@ -31,9 +39,25 @@ public class TableNameTests : IDisposable
     [Fact]
     public void Should_Return_Renamed_TableName_For_Attributed_Class()
     {
-        var actual = db.GetTableName<RenamedTable>();
+        var actual = db.GetTableName<RenamedTable>(escape: true);
 
         actual.ShouldBe(db.Provider.EscapeTableName("TestTable2"));
+    }
+
+    [Fact]
+    public void Should_Return_TableName_For_Unattributed_Class_Unescaped()
+    {
+        var actual = db.GetTableName<TestTable1>(escape: false);
+
+        actual.ShouldBe("TestTable1");
+    }
+
+    [Fact]
+    public void Should_Return_Renamed_TableName_For_Attributed_Class_Unescaped()
+    {
+        var actual = db.GetTableName<RenamedTable>(escape: false);
+
+        actual.ShouldBe("TestTable2");
     }
 
     public void Dispose()
