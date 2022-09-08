@@ -21,7 +21,7 @@ public class ColumnNameTests : IDisposable
     }
 
     [Fact]
-    public void Should_Return_PropertyName_For_Unattributed_Properties()
+    public void Should_Return_PropertyName_Escaped_As_Default()
     {
         var actual = _db.GetColumnName<TestTable>(x => x.Property1);
 
@@ -29,11 +29,35 @@ public class ColumnNameTests : IDisposable
     }
 
     [Fact]
+    public void Should_Return_PropertyName_For_Unattributed_Properties()
+    {
+        var actual = _db.GetColumnName<TestTable>(x => x.Property1, escape: true);
+
+        actual.ShouldBe(_db.Provider.EscapeSqlIdentifier("Property1"));
+    }
+
+    [Fact]
     public void Should_Return_Renamed_PropertyName_For_Attributed_Properties()
     {
-        var actual = _db.GetColumnName<TestTable>(x => x.Renamed);
+        var actual = _db.GetColumnName<TestTable>(x => x.Renamed, escape: true);
 
         actual.ShouldBe(_db.Provider.EscapeSqlIdentifier("Property2"));
+    }
+
+    [Fact]
+    public void Should_Return_PropertyName_For_Unattributed_Properties_Unescaped()
+    {
+        var actual = _db.GetColumnName<TestTable>(x => x.Property1, escape: false);
+
+        actual.ShouldBe("Property1");
+    }
+
+    [Fact]
+    public void Should_Return_Renamed_PropertyName_For_Attributed_Properties_Unescaped()
+    {
+        var actual = _db.GetColumnName<TestTable>(x => x.Renamed, escape: false);
+
+        actual.ShouldBe("Property2");
     }
 
     public void Dispose()
